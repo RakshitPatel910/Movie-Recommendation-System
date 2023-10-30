@@ -1,34 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import witeLogo from '/wite.svg'
-import './App.css'
+import { useState } from 'react';
+import axios from 'axios'; 
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [input, setInput] = useState('')
+  // const [movieInput, setMovieInput] = useState([])
+  const [result, setResult] = useState([])
+
+  const getRecommendation = async (movieInput) => {
+    console.log(movieInput)
+    await axios.post('http://localhost:3010/getRecommendation/getContentBasedRec', { input_movies: movieInput})
+      .then((res) => {
+        console.log(res.data.recommendationList);
+        setResult(res.data.recommendationList)
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+  }
+
+  const handleSubmit = async () => {
+    let list = await input.replaceAll(', ', ',');
+
+    let finalList = await list.split(',');
+
+    // setMovieInput(movieInput.concat(finalList));
+    console.log(finalList);
+
+    await getRecommendation(finalList);
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://witejs.web.app" target="_blank">
-          <img src={witeLogo} className="logo" alt="Wite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <>
+      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems: 'center' }}>
+        <input 
+        type='text' 
+        onChange={(e) => {setInput(e.target.value)}}
+        style={{ padding:'5px',width: '70vw', }} ></input>
+        {/* {console.log(input)} */}
+        <button onClick={() => handleSubmit()} style={{ padding:'20px', margin: '20px', border:'2px solid white' }}  >Submit</button>
       </div>
-      <h1>Wite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Wite and React logos to learn more
-      </p>
-    </div>
+      {
+        result.map( (movie) => (
+            <p> {movie} </p>
+         ) )
+      }
+    </>
   )
 }
 

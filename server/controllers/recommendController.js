@@ -2,6 +2,7 @@ import { spawn } from "child_process"
 
 export const getContentBasedRec = async (req, res) => {
     const { input_movies } = req.body
+    console.log(req.body)
 
     // const input_movies = ['The Dark Knight Rises', 'The Avengers', 'Iron Man', 'Avatar', 'Life of Pi']
     // let input = JSON.parse(input_movies)
